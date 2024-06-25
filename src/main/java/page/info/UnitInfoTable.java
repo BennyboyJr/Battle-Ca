@@ -289,7 +289,7 @@ public class UnitInfoTable extends Page {
 		main[1][6].setText(MainLocale.INFO, "price");
 		main[2][0].setText(MainLocale.INFO, "range");
 		main[2][1].setText(String.valueOf(f.du.getRange()));
-		main[2][2].setText("dps");
+		main[2][2].setText("DPS");
 		main[2][4].setText(MainLocale.INFO, "speed");
 		main[2][6].setText(MainLocale.INFO, "atkf");
 

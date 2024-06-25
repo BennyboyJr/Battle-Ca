@@ -226,7 +226,7 @@ public class EnemyInfoTable extends Page {
 		main[1][7].setText("" + Math.floor(e.de.getDrop() * b.t().getDropMulti()) / 100);
 		main[2][0].setText(MainLocale.INFO, "range");
 		main[2][1].setText("" + e.de.getRange());
-		main[2][2].setText("dps");
+		main[2][2].setText("DPS");
 		main[2][4].setText(MainLocale.INFO, "speed");
 		main[2][5].setText("" + e.de.getSpeed());
 		main[2][6].setText(MainLocale.INFO, "atkf");
@@ -263,7 +263,7 @@ public class EnemyInfoTable extends Page {
 
 		int[][] atkData = e.de.rawAtkData();
 		for (int i = 0; i < atkData.length; i++) {
-			atks[i][0].setText(MainLocale.INFO, "atk");
+			atks[i][0].setText(MainLocale.INFO, "Damage");
 			atks[i][2].setText(MainLocale.INFO, "preaa");
 			if (MainBCU.seconds)
 				atks[i][3].setText(MainBCU.toSeconds(atkData[i][1]));
@@ -271,7 +271,7 @@ public class EnemyInfoTable extends Page {
 				atks[i][3].setText(atkData[i][1] + "f");
 			atks[i][4].setText(0, atkData[i][3] == -1 ? "igtr" : "cntr");
 			atks[i][5].setText("" + (!(e.de instanceof DataEnemy) && ((CustomEnemy) e.de).atks[i].specialTrait));
-			atks[i][6].setText(MainLocale.INFO, "dire");
+			atks[i][6].setText(MainLocale.INFO, "Direction");
 			atks[i][7].setText("" + atkData[i][3]);
 		}
 		for (int i = 0; i < atkList.size(); i++) {
@@ -284,7 +284,7 @@ public class EnemyInfoTable extends Page {
 				atks[ind][3].setText(atkList.get(i).pre + "f");
 			atks[ind][4].setText(0, atkList.get(i).specialTrait ? "igtr" : "cntr");
 			atks[ind][5].setText("" + (atkList.get(i).specialTrait));
-			atks[ind][6].setText(MainLocale.INFO, "dire");
+			atks[ind][6].setText(MainLocale.INFO, "Direction");
 			atks[ind][7].setText("" + atkList.get(i).dire);
 		}
 		if (e.de.getLimit() >= 100)
