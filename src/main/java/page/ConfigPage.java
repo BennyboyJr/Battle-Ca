@@ -87,6 +87,7 @@ public class ConfigPage extends Page {
 	private final JTF tole = new JTF(String.valueOf(MainBCU.searchTolerance));
 	private final JTG dyna = new JTG(MainLocale.PAGE, "dynamic");
 	private final JCB reallv = new JCB(MainLocale.PAGE, "reallv");
+	private final JBTN keyb = new JBTN(MainLocale.PAGE, "confanim");
 
 	private final JScrollPane jsps = new JScrollPane(jls);
 
@@ -182,6 +183,7 @@ public class ConfigPage extends Page {
 		set(rlpk, x, y, 1225, 775, 400, 50);
 		set(vcol, x, y, 1225, 850, 400, 50);
 		set(vres, x, y, 1225, 925, 400, 50);
+		set(keyb, x, y, 1225, 1000, 400, 50);
 
 		set(jlla, x, y, 1750, 100, 300, 50);
 		set(jsps, x, y, 1750, 150, 300, 300);
@@ -421,6 +423,8 @@ public class ConfigPage extends Page {
 			MainBCU.useDynamic = dyna.isSelected();
 			tole.setEnabled(!dyna.isSelected());
 		});
+
+		keyb.setLnr(() -> new KeybindPage(this));
 	}
 
 	private void ini() {
@@ -481,6 +485,7 @@ public class ConfigPage extends Page {
 		add(tole);
 		add(dyna);
 		add(jtol);
+		add(keyb);
 		excont.setSelected(CommonStatic.getConfig().exContinuation);
 		prlvmd.setText(String.valueOf(CommonStatic.getConfig().prefLevel));
 		jls.setSelectedValue(cfg().lang, true);
