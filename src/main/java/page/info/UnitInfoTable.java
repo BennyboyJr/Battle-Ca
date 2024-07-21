@@ -145,7 +145,7 @@ public class UnitInfoTable extends Page {
 		main[2][5].setText(String.valueOf((int) (ef.du.getSpeed() * (1 + b.getInc(Data.C_SPE) * 0.01))));
 		main[3][5].setText(MainBCU.seconds ? MainBCU.toSeconds(ef.du.getTBA()) : ef.du.getTBA() + "f");
 
-		int respawn = b.t().getFinRes(ef.du.getRespawn());
+		int respawn = b.t().getFinRes(ef.du.getRespawn(), false);
 		main[1][5].setText(MainBCU.seconds ? MainBCU.toSeconds(respawn) : respawn + "f");
 		main[1][7].setText(String.valueOf(ef.getPrice(1)));
 		main[0][4].setText(Interpret.getTrait(traits, 0));
@@ -414,7 +414,7 @@ public class UnitInfoTable extends Page {
 					wrapped = str.substring(0, i++);
 
 				int maximum; //JP proc texts don't count with space, this is here to prevent it from staying in while loop forever
-				if (CommonStatic.getConfig().lang == 3)
+				if (CommonStatic.getConfig().lang == CommonStatic.Lang.Locale.JP)
 					maximum = Math.max(wrapped.lastIndexOf("。"), wrapped.lastIndexOf("、"));
 				else
 					maximum = Math.max(Math.max(wrapped.lastIndexOf(" "), wrapped.lastIndexOf(".")), wrapped.lastIndexOf(","));

@@ -69,8 +69,10 @@ public class EnemyListTable extends SortTable<Enemy> {
 			c--;
 		if (c == 0)
 			return e0.compareTo(e1);
-		if (c == 8 || c == 11)
+		else if (c == 8)
 			return Double.compare((double) get(e0, c), (double) get(e1, c));
+		else if (c == 11)
+			return Float.compare((float) get(e0, c), (float) get(e1, c));
 		int i0 = (int) get(e0, c);
 		int i1 = (int) get(e1, c);
 		return Integer.compare(i0, i1);
@@ -95,7 +97,7 @@ public class EnemyListTable extends SortTable<Enemy> {
 		else if (c == 7)
 			return e.de.getSpeed();
 		else if (c == 8)
-			return Math.floor(e.de.getDrop() * b.t().getDropMulti()) / 100;
+			return Math.floor(e.de.getDrop() * b.t().getDropMulti(false)) / 100;
 		else if (c == 9)
 			return e.de.rawAtkData()[0][1];
 		else if (c == 10)

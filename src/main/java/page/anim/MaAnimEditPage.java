@@ -30,7 +30,7 @@ public class MaAnimEditPage extends Page implements AbEditPage {
 
 	private static final String[] mod = new String[] { "0 parent", "1 id", "2 sprite", "3 z-order", "4 pos-x",
 			"5 pos-y", "6 pivot-x", "7 pivot-y", "8 scale", "9 scale-x", "10 scale-y", "11 angle", "12 opacity",
-			"13 horizontal flip", "14 vertical flip", "50 extendX", "52 extendY" };
+			"13 horizontal flip", "14 vertical flip", "50 extendX", "52 extendY", "53 scale mult", };
 
 	private final JBTN back = new JBTN(0, "back");
 	private final JTree jta = new JTree();
@@ -311,10 +311,10 @@ public class MaAnimEditPage extends Page implements AbEditPage {
 		if (ab.getEntity() != null && mpet.part != null) {
 			Part p = mpet.part;
 			EPart ep = ab.getEntity().ent[p.ints[0]];
-			inft.setText("frame: " + ab.getEntity().ind());
-			inff.setText("part frame: " + (p.frame - p.off));
-			infv.setText("actual value: " + ep.getVal(p.ints[1]));
-			infm.setText("part value: " + p.vd);
+			inft.setText(Page.get(0, "curframe") + ": " + ab.getEntity().ind());
+			inff.setText(Page.get(0, "pframe") + ": " + (p.frame - p.off));
+			infv.setText(Page.get(0, "curvalue") + ": " + ep.getVal(p.ints[1]));
+			infm.setText(Page.get(0, "pvalue") + ": " + p.vd);
 		} else {
 			inft.setText("");
 			inff.setText("");
@@ -456,21 +456,12 @@ public class MaAnimEditPage extends Page implements AbEditPage {
 		tmul.setLnr(x -> {
 			if (changing)
 				return;
-			changing = true;
-
-				float d = CommonStatic.parseIntN(tmul.getText()) * 0.01f;
-
-			if(d <= 0) {
+			float d = CommonStatic.parseIntN(tmul.getText()) * 0.01f;
+			if(d <= 0 || !Opts.conf((d < 1 ? "Decrease " : "Increase ") + "animation speed to " + (d * 100) + "%?")) {
 				tmul.setText("");
-				changing = false;
 				return;
 			}
-
-			String str = d < 1 ? "Decrease " : "Increase ";
-			if (!Opts.conf(str + "animation speed to " + (d * 100) + "%?")) {
-				changing = false;
-				return;
-			}
+			changing = true;
 
 			if (lmul.isSelected() && maet.getSelected().length > 0) {
 				for (Part p : maet.getSelected()) {
@@ -627,6 +618,8 @@ public class MaAnimEditPage extends Page implements AbEditPage {
 		addl.setEnabled(false);
 		reml.setEnabled(false);
 		jtl.setEnabled(false);
+		advs.setEnabled(false);
+		sort.setEnabled(false);
 		jtl.setPaintTicks(true);
 		jtl.setPaintLabels(true);
 		addListeners();

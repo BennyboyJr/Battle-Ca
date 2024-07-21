@@ -352,11 +352,11 @@ public interface BattleBox {
 
 		private int getFireLang() {
 			switch (CommonStatic.getConfig().lang) {
-				case 1:
+				case ZH:
 					return 18;
-				case 2:
+				case KR:
 					return 16;
-				case 3:
+				case JP:
 					return 12;
 				default:
 					return 14;
@@ -426,7 +426,7 @@ public interface BattleBox {
 							}
 
 							if (sb.spiritCooldown[i][j] == 0) {
-								FakeImage summonText = aux.spiritSummon[Res.decideLocale()].getImg();
+								FakeImage summonText = aux.spiritSummon[Res.decideLocale().ordinal()].getImg();
 
 								int stw = (int) (summonText.getWidth() * hr);
 								int sth = (int) (summonText.getHeight() * hr);
@@ -536,7 +536,7 @@ public interface BattleBox {
 						}
 
 						if (!isBehind && sb.spiritCooldown[index][i] == 0) {
-							FakeImage summonText = aux.spiritSummon[Res.decideLocale()].getImg();
+							FakeImage summonText = aux.spiritSummon[Res.decideLocale().ordinal()].getImg();
 
 							int stw = (int) (summonText.getWidth() * hr);
 							int sth = (int) (summonText.getHeight() * hr);
@@ -750,6 +750,14 @@ public interface BattleBox {
 					float sy = midh - (road_h - ((ECastle) sb.ebase).smokeLayer * DEP + 100f) * bf.sb.siz;
 
 					((ECastle) sb.ebase).smoke.draw(gra, setP(sx, sy), psiz * 1.2f);
+				}
+				if(sb.temp_inten == 0 && ((ECastle) sb.ebase).guard != null && !((ECastle) sb.ebase).guard.done()) { // TODO (visuals): match exact visuals in-game
+					gra.setTransform(at);
+
+					float sx = getX(sb.ebase.pos + 25f);
+					float sy = midh - (road_h - 3 * DEP + 50f) * bf.sb.siz;
+
+					((ECastle) sb.ebase).guard.draw(gra, setP(sx, sy), psiz * 1.2f);
 				}
 			}
 
@@ -984,11 +992,13 @@ public interface BattleBox {
 				return;
 			}
 
-			if(min < 10) {
-				FakeImage m = aux.timer[min].getImg();
+			if(min < 100) {
+				FakeImage m = aux.timer[min/10].getImg();
 
-				g.drawImage(zero, p.x, p.y, zero.getWidth() * ratio, zero.getHeight() * ratio);
-				p.x += zero.getWidth() * ratio;
+				g.drawImage(m, p.x, p.y, m.getWidth() * ratio, m.getHeight() * ratio);
+				p.x += m.getWidth() * ratio;
+
+				m = aux.timer[min%10].getImg();
 
 				g.drawImage(m, p.x, p.y, m.getWidth()*ratio, m.getHeight()*ratio);
 				p.x += m.getWidth() * ratio;

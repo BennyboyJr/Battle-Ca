@@ -1,6 +1,8 @@
 package page.info;
 
 import common.util.stage.*;
+import common.util.unit.Enemy;
+import main.MainBCU;
 import org.jetbrains.annotations.NotNull;
 import page.MainFrame;
 import page.MainLocale;
@@ -19,7 +21,7 @@ public class HeadTable extends AbJTable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static String[] infs, limits, rarity;
+	private static String[] infs, limits, rarity, climits;
 
 	static {
 		redefine();
@@ -29,6 +31,7 @@ public class HeadTable extends AbJTable {
 		infs = Page.get(MainLocale.INFO, "ht0", 6);
 		limits = Page.get(MainLocale.INFO, "ht1", 7);
 		rarity = new String[] { "N", "EX", "R", "SR", "UR", "LR" };
+		climits = Page.get(MainLocale.INFO, "ht2", 2);
 	}
 
 	private Object[][] data;
@@ -70,11 +73,38 @@ public class HeadTable extends AbJTable {
 		return data[r][c];
 	}
 
+	protected synchronized void hover(Point p) {
+		if (data == null)
+			return;
+		int c = getColumnModel().getColumnIndexAtX(p.x);
+		int r = p.y / getRowHeight();
+		if (r == 0 && c > 1 && c < Math.min(sta.getCont().stars.length + 2, 6))
+			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		else if (r == 1 && c == 5)
+			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		else if (r == 1 && c == 7)
+			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		else if (r == 3 && c == 1)
+			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		else if (r == 3 && c == 3)
+			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		else if (r == 3 && c == 5)
+			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		else if (r == 4 && c == 7 && data[r][c] instanceof LvRestrict)
+			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		else if (r == 3 && c == 7 && data[r][c] != null)
+			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		else
+			setCursor(Cursor.getDefaultCursor());
+	}
+
 	protected void clicked(Point p) {
 		if (data == null)
 			return;
 		int c = getColumnModel().getColumnIndexAtX(p.x);
 		int r = p.y / getRowHeight();
+		if (r == 0 && c > 1 && c < Math.min(sta.getCont().stars.length + 2, 6))
+			page.callBack(c - 2);
 		if (r == 1 && c == 5)
 			MainFrame.changePanel(new MusicPage(page, sta.mus0));
 		if (r == 1 && c == 7)
@@ -91,7 +121,7 @@ public class HeadTable extends AbJTable {
 			MainFrame.changePanel(new CharaGroupPage(page, (CharaGroup) data[r][c]));
 	}
 
-	protected void setData(Stage st) {
+	protected void setData(Stage st, int star) {
 		sta = st;
 		Object[][] lstr = new Object[6][8];
 		Object[] tit, bas, bas2, img, rar, reg;
@@ -103,18 +133,31 @@ public class HeadTable extends AbJTable {
 		reg = lstr[5];
 		tit[0] = "ID:";
 		tit[1] = st.getCont().id + "-" + st.id();
-		String star = Page.get(MainLocale.INFO, "star");
+		String starStr = Page.get(MainLocale.INFO, "star");
 		for (int i = 0; i < st.getCont().stars.length; i++)
-			tit[2 + i] = (i + 1) + star + ": " + st.getCont().stars[i] + "%";
+			tit[2 + i] = (i + 1) + starStr + ": " + st.getCont().stars[i] + "%";
 		tit[6] = Page.get(MainLocale.INFO, "chcos");
 		tit[7] = st.getCont().price + 1;
-		bas[0] = infs[0];
-		bas[1] = st.health;
+		if (st.timeLimit != 0) {
+			bas[0] = Page.get(MainLocale.INFO, "time");
+			bas[1] = st.timeLimit +" min";
+		} else {
+			bas[0] = infs[0];
+			SCDef.Line[] lines = st.data.getSimple();
+			if (st.getCont().getCont().getSID().equals("000003"))
+				bas[1] = st.health * (star + 1);
+			else if (lines.length != 0 && lines[lines.length - 1].castle_0 == 0 && lines[lines.length - 1].enemy != null && lines[lines.length - 1].enemy.cls == Enemy.class)
+				bas[1] = ((Enemy) lines[lines.length - 1].enemy.get()).de.getHp() * lines[lines.length - 1].multiple / 100 * st.getCont().stars[star] / 100;
+			else
+				bas[1] = st.health;
+		}
 		bas[2] = infs[1] + ": " + st.len;
 		bas[3] = infs[2] + ": " + st.max;
 		bas[4] = Page.get(MainLocale.INFO, "mus") + ":";
 		bas[5] = st.mus0;
 		bas[6] = "<" + st.mush + "%:";
+		bas[7] = st.mus1;
+
 		bas2[0] = Page.get(MainLocale.INFO, "minspawn");
 		if(st.minSpawn == st.maxSpawn)
 			bas2[1] = st.minSpawn + "f";
@@ -122,17 +165,29 @@ public class HeadTable extends AbJTable {
 			bas2[1] = st.minSpawn + "f ~ " + st.maxSpawn + "f";
 		bas2[2] = MainLocale.getLoc(MainLocale.INFO, "ht03");
 		bas2[3] = !st.non_con;
-		if(st.timeLimit != 0) {
-			bas2[4] = Page.get(MainLocale.INFO, "time");
-			bas2[5] = st.timeLimit +" min";
-		}
-		bas[7] = st.mus1;
+		bas2[4] = Page.get(MainLocale.INFO, "bossguard");
+		bas2[5] = st.bossGuard;
+
 		img[0] = infs[4];
 		img[1] = st.bg;
 		img[2] = "<" + st.bgh + "%";
 		img[3] = st.bg1;
 		img[4] = infs[5];
 		img[5] = st.castle;
+
+		if (st.getCont().stageLimit != null) {
+			if (st.getCont().stageLimit.maxMoney > 0) {
+				bas2[6] = climits[0];
+				bas2[7] = st.getCont().stageLimit.maxMoney;
+			}
+			if (st.getCont().stageLimit.globalCooldown > 0) {
+				img[6] = climits[1];
+				img[7] = MainBCU.seconds
+						? MainBCU.toSeconds(st.getCont().stageLimit.globalCooldown) + "s"
+						: st.getCont().stageLimit.globalCooldown + "f";
+			}
+		}
+
 		Limit lim = st.getLim(0);
 		if (lim != null) {
 			if (lim.rare != 0) {

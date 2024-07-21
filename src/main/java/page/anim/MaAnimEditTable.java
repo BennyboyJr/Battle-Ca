@@ -52,11 +52,6 @@ public class MaAnimEditTable extends AnimTable<Part> {
 	}
 
 	@Override
-	public int getColumnCount() {
-		return strs.length;
-	}
-
-	@Override
 	public String getColumnName(int c) {
 		return strs[lnk[c]];
 	}
@@ -147,7 +142,7 @@ public class MaAnimEditTable extends AnimTable<Part> {
 			else if (v >= anim.mamodel.n)
 				v = anim.mamodel.n - 1;
 		if (c == 1)
-			if ((v < 0 || v > 14) && v != 50 && v != 52)
+			if ((v < 0 || v > 14) && v != 50 && v != 52 && v != 53)
 				v = 5;
 		if (c == 2 && (v < -1 || v == 0))
 			v = -1;
