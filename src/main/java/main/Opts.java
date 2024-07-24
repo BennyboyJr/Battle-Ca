@@ -87,13 +87,20 @@ public class Opts {
 	}
 
 	public static void errOnce(String text, String title, boolean fatal) {
-		if(popped)
+		if (popped)
 			return;
 
 		popped = true;
-
 		int opt = JOptionPane.DEFAULT_OPTION;
-		int result = JOptionPane.showOptionDialog(null, text, title, opt, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+
+		JTextArea txt = new JTextArea(text);
+		JScrollPane scroll = new JScrollPane(txt);
+		txt.setLineWrap(true);
+		txt.setWrapStyleWord(true);
+		txt.setEditable(false);
+		scroll.setPreferredSize(UtilPC.size(900, 500));
+
+		int result = JOptionPane.showOptionDialog(null, txt, title, opt, JOptionPane.INFORMATION_MESSAGE, null, null, null);
 
 		if(result == JOptionPane.OK_OPTION || result == JOptionPane.NO_OPTION || result == JOptionPane.CLOSED_OPTION) {
 			if(fatal)

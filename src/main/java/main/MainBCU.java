@@ -300,6 +300,23 @@ public class MainBCU {
 		}
 	}
 
+	public enum ErrorHandleType {
+		ALWAYS_ASK("alwaysask"),
+		QUIT_AND_SAVE("quitnosave"),
+		QUIT_WITHOUT_SAVE("quitsave"),
+		CONTINUE("continue");
+
+		String text;
+
+		ErrorHandleType(String text) {
+		}
+
+		@Override
+		public String toString() {
+			return Page.get(MainLocale.PAGE, text);
+		}
+	}
+
 	public static final int ver = 50301;
 	public static final boolean isBeta = false;
 	private static final DecimalFormat df = new DecimalFormat("#.##");
@@ -318,6 +335,7 @@ public class MainBCU {
 	public static boolean useDynamic = false;
 	private static AutoSaveTimer ast;
 	public static int modelShift = 0;
+	public static ErrorHandleType errorHandle = ErrorHandleType.ALWAYS_ASK;
 
 	public static void restartAutoSaveTimer() {
 		if (ast != null)

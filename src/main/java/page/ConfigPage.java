@@ -88,6 +88,7 @@ public class ConfigPage extends Page {
 	private final JTF tole = new JTF(String.valueOf(MainBCU.searchTolerance));
 	private final JTG dyna = new JTG(MainLocale.PAGE, "dynamic");
 	private final JCB reallv = new JCB(MainLocale.PAGE, "reallv");
+	private final JBTN errt = new JBTN(MainLocale.PAGE, "err");
 
 	private final JL comv = new JL(Page.get(MainLocale.PAGE, "CORE Ver: ") + AssetLoader.CORE_VER);
 
