@@ -4,6 +4,7 @@ import common.CommonStatic;
 import common.CommonStatic.Config;
 import common.io.Backup;
 import common.io.assets.AssetLoader;
+import common.pack.Context;
 import common.pack.UserProfile;
 import common.util.ImgCore;
 import common.util.lang.MultiLangCont;
@@ -192,6 +193,7 @@ public class ConfigPage extends Page {
 		set(exla, x, y, 1750, 475, 300, 50);
 		set(extt, x, y, 1750, 550, 300, 50);
 		set(rlla, x, y, 1750, 625, 300, 50);
+		set(errt, x, y, 1750, 700, 300, 50);
 
 		set(comv, x, y, 1950, 1200, 300, 50);
 	}
@@ -418,6 +420,8 @@ public class ConfigPage extends Page {
 
 		reallv.addActionListener(c -> CommonStatic.getConfig().realLevel = reallv.isSelected());
 
+		errt.setLnr(c -> CommonStatic.ctx.noticeErr(new Exception(), Context.ErrType.FATAL, "skill issue"));
+
 		tole.setLnr(c -> {
 			MainBCU.searchTolerance = Math.max(0, CommonStatic.parseIntN(tole.getText()));
 			tole.setText(String.valueOf(MainBCU.searchTolerance));
@@ -452,6 +456,7 @@ public class ConfigPage extends Page {
 		add(jlot);
 		add(musc);
 		add(rlla);
+		add(errt);
 		add(exla);
 		add(extt);
 		add(jlbg);

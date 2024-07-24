@@ -92,22 +92,33 @@ public class Opts {
 
 		popped = true;
 		int opt = JOptionPane.DEFAULT_OPTION;
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setPreferredSize(UtilPC.size(800, 500));
 
+		MainBCU.ErrorHandleType handle = MainBCU.errorHandle;
 		JTextArea txt = new JTextArea(text);
 		JScrollPane scroll = new JScrollPane(txt);
 		txt.setLineWrap(true);
 		txt.setWrapStyleWord(true);
 		txt.setEditable(false);
-		scroll.setPreferredSize(UtilPC.size(900, 500));
+		panel.add(scroll);
 
-		int result = JOptionPane.showOptionDialog(null, txt, title, opt, JOptionPane.INFORMATION_MESSAGE, null, null, null);
-
-		if(result == JOptionPane.OK_OPTION || result == JOptionPane.NO_OPTION || result == JOptionPane.CLOSED_OPTION) {
-			if(fatal)
-				CommonStatic.def.save(false, true);
-
-			popped = false;
+		if (MainBCU.errorHandle.equals(MainBCU.ErrorHandleType.ALWAYS_ASK)) {
+			JLabel warning = new JLabel();
+			String warn = fatal ? "This error is considered fatal, so there may be risk of continuing. What would you like to do?"
+					: "What would you like to do?";
+			warning.setText("<html>" + warn + "</html>");
+			panel.add(scroll);
+			panel.add(warning);
+			handle = MainBCU.getErrorHandleOptions()[JOptionPane.showOptionDialog(null, panel, title, opt,
+					JOptionPane.INFORMATION_MESSAGE, null, MainBCU.getErrorHandleOptions(), MainBCU.getDefaultErrorHandle())];
+		} else {
+			JOptionPane.showOptionDialog(null, panel, title, opt, JOptionPane.INFORMATION_MESSAGE, null, null, null);
 		}
+		CommonStatic.def.save(handle == MainBCU.ErrorHandleType.QUIT_AND_SAVE,
+				handle != MainBCU.ErrorHandleType.CONTINUE);
+		popped = false;
 	}
 
 	public static void warnPop(String text, String title) {

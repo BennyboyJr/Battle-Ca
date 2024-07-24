@@ -37,6 +37,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.function.Consumer;
 
@@ -301,14 +302,18 @@ public class MainBCU {
 	}
 
 	public enum ErrorHandleType {
-		ALWAYS_ASK("alwaysask"),
-		QUIT_AND_SAVE("quitnosave"),
-		QUIT_WITHOUT_SAVE("quitsave"),
-		CONTINUE("continue");
+		ALWAYS_ASK("alwaysask", false),
+		CONTINUE("continue", true),
+		QUIT_AND_SAVE("quitsave", true),
+		QUIT_WITHOUT_SAVE("quitnosave", true),
+		;
 
-		String text;
+		final String text;
+		final boolean isOption;
 
-		ErrorHandleType(String text) {
+		ErrorHandleType(String text, boolean isOption) {
+			this.text = text;
+			this.isOption = isOption;
 		}
 
 		@Override
@@ -426,6 +431,14 @@ public class MainBCU {
 		File assets = new File(CommonStatic.ctx.getBCUFolder(), "./assets/assets/zip");
 
 		return res.exists() && assets.exists();
+	}
+
+	public static ErrorHandleType[] getErrorHandleOptions() {
+		return Arrays.stream(ErrorHandleType.values()).filter(e -> e.isOption).toArray(ErrorHandleType[]::new);
+	}
+
+	public static ErrorHandleType getDefaultErrorHandle() {
+		return ErrorHandleType.QUIT_WITHOUT_SAVE;
 	}
 
 	private static class AutoSaveTimer extends Thread {
